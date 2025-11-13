@@ -7,20 +7,20 @@
 
 #include <stdint.h>
 
-#define RSQ1   100
-#define BSQ1   100
-#define GSQ1   10
+#define RSQ1   255
+#define BSQ1   255
+#define GSQ1   153
 
-#define RSQ2   100
-#define BSQ2   10
-#define GSQ2   100
+#define RSQ2   204
+#define BSQ2   0
+#define GSQ2   153
 
 #define RDEF   10
 #define BDEF   50
 #define GDEF   20
 
 // bit flags
-enum Direction : unsigned {
+enum Direction : uint8_t{
     TOP = 1 << 0, 
     BOTTOM = 1 << 1,
     LEFT = 1 << 2,
@@ -29,6 +29,13 @@ enum Direction : unsigned {
 
 struct RGB{
     uint8_t r,g,b;
+
+    bool operator==(const RGB& other) const {
+        return r == other.r && g == other.g && b == other.b;
+    }
+    bool operator!=(const RGB& other) const {
+        return r != other.r || g != other.g || b != other.b;
+    }
 };
 
 class Square{
@@ -40,6 +47,8 @@ class Square{
 
     Square();
     ~Square() = default;
+    Square(const Square& other);
+    Square& operator=(const Square& other);
     Square(int x, int y);
     Square(int x, int y, Direction di);
     Square(int x, int y, RGB rgb);

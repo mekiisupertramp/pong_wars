@@ -2,6 +2,23 @@
 
 Square::Square(): posx(0), posy(0), color(RGB{.r=RDEF, .g=BDEF, .b=GDEF}){}
 
+Square::Square(const Square& other)
+    : posx(other.posx),
+      posy(other.posy),
+      color(other.color),
+      dir(other.dir) {}
+
+Square& Square::operator=(const Square& other){
+    if (this == &other) {
+        return *this;
+    }
+    posx = other.posx;
+    posy = other.posy;
+    color = other.color;
+    dir = other.dir;
+    return *this;
+}
+
 Square::Square(int x, int y) : Square(){
     posx = x;
     posy = y;    
