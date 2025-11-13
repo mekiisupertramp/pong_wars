@@ -24,9 +24,6 @@ const std::vector<Square*>& Playground::getPixels(){return pixels;}
 int Playground::getWidth(){return width;}
 int Playground::getHeigth(){return height;}
 
-Collision Playground::getCollision(Square* sq){
-    return NONE;
-}
 
 void Playground::init(Square* sq1, Square* sq2){
     for(auto p: pixels){
@@ -34,25 +31,89 @@ void Playground::init(Square* sq1, Square* sq2){
             p->color = sq1->color;
        }else{
         if((p->posx==sq2->posx)&&(p->posy==sq2->posy)){
-            p->color = sq2->color;
+            p->color = sq2->color; 
         }
        }
     }
 }
-void Playground::update(Square* sq1, Square* sq2){
-    Square nxtSq1 = *sq1;
-    Square nxtSq2 = *sq2;
-    nxtSq1.nextPos();
-    nxtSq2.nextPos();
-    for(auto p: pixels){
-        // check collisions
-        // do something
-        // then update colors ..
-       if(p->isSamePos(nxtSq1)){p->color=sq1->color;}
-       if(p->isSamePos(*sq1)){p->color=sq2->color;}
-       if(p->isSamePos(nxtSq2)){p->color=sq2->color;}
-       if(p->isSamePos(*sq2)){p->color=sq1->color;}
+
+void Playground::checkNeighbours(Square* sq1, Square* sq2){
+    if(sq1->posx>0){
+        // check left
+        if(pixels[sq1->posx-1+sq1->posy*width]->color == sq1->color){
+            pixels[sq1->posx-1+sq1->posy*width]->color = sq2->color;
+            sq1->dir = (sq1->dir&~LEFT) | RIGHT;
+        }
     }
+    if(sq1->posx<width-1){
+        // check right
+        if(pixels[sq1->posx+1+sq1->posy*width]->color == sq1->color){
+            pixels[sq1->posx+1+sq1->posy*width]->color = sq2->color;
+            sq1->dir = (sq1->dir&~RIGHT) | LEFT;
+        }
+    }
+    if(sq1->posy>0){
+        // check up
+        if(pixels[sq1->posx+((sq1->posy-1)*width)]->color == sq1->color){
+            pixels[sq1->posx+((sq1->posy-1)*width)]->color = sq2->color;
+            sq1->dir = (sq1->dir&~TOP) | BOTTOM;
+        }        
+    }
+    if(sq1->posy<height-1){
+        // check down
+        if(pixels[sq1->posx+((sq1->posy+1)*width)]->color == sq1->color){
+            pixels[sq1->posx+((sq1->posy+1)*width)]->color = sq2->color;
+        }        
+    }
+
+    if(sq2->posx>0){
+        // check left
+        if(pixels[sq2->posx-1+sq2->posy*width]->color == sq2->color){
+            pixels[sq2->posx-1+sq2->posy*width]->color = sq1->color;
+            sq2->dir = (sq2->dir&~LEFT) | RIGHT;
+        }
+    }
+    if(sq2->posx<width-1){
+        // check right
+        if(pixels[sq2->posx+1+sq2->posy*width]->color == sq2->color){
+            pixels[sq2->posx+1+sq2->posy*width]->color = sq1->color;
+            sq2->dir = (sq2->dir&~RIGHT) | LEFT;
+        }
+    }
+    if(sq2->posy>0){
+        // check up
+        if(pixels[sq2->posx+((sq2->posy-1)*width)]->color == sq2->color){
+            pixels[sq2->posx+((sq2->posy-1)*width)]->color = sq1->color;
+            sq2->dir = (sq2->dir&~TOP) | BOTTOM;
+        }        
+    }
+    if(sq2->posy<height-1){
+        // check down
+        if(pixels[sq2->posx+((sq2->posy+1)*width)]->color == sq2->color){
+            pixels[sq2->posx+((sq2->posy+1)*width)]->color = sq1->color;
+        }        
+    }
+}
+
+void Playground::checkWalls(Square* sq){
+    if((sq->posx==0)&&(sq->posy==0)) sq->dir = BOTTOM|RIGHT;
+    if((sq->posx==width-1)&&(sq->posy==0)) sq->dir = BOTTOM|LEFT;
+    if((sq->posx==0)&&(sq->posy==height-1)) sq->dir = TOP|RIGHT;
+    if((sq->posx==width-1)&&(sq->posy==height-1)) sq->dir = TOP|LEFT;
+    if(sq->posx==0) sq->dir = (sq->dir & ~LEFT) | RIGHT;
+    if(sq->posx==width-1) sq->dir = (sq->dir & ~RIGHT) | LEFT;
+    if(sq->posy==0) sq->dir = (sq->dir & ~TOP) | BOTTOM;
+    if(sq->posy==height-1) sq->dir = (sq->dir & ~BOTTOM) | TOP;
+}
+
+void Playground::update(Square* sq1, Square* sq2){  
+    pixels[sq1->posx+sq1->posy*width]->color = sq2->color;
+    pixels[sq2->posx+sq2->posy*width]->color = sq1->color;
+    checkNeighbours(sq1,sq2);
+    checkWalls(sq1);
+    checkWalls(sq2); 
     sq1->nextPos();
     sq2->nextPos();
+    pixels[sq1->posx+sq1->posy*width]->color = sq1->color;
+    pixels[sq2->posx+sq2->posy*width]->color = sq2->color;
 }

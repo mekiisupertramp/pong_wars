@@ -15,12 +15,6 @@
 
 #define LC  255 // lines color
 
-enum Collision{
-    NONE, 
-    WALL,
-    TARGET    
-};
-
 class Playground{
     private: 
     int width;
@@ -33,7 +27,8 @@ class Playground{
 
     void init(Square* sq1, Square* sq2);
     void update(Square* sq1, Square* sq2);    
-    Collision getCollision(Square* sq);
+    void checkNeighbours(Square* sq1, Square* sq2);
+    void checkWalls(Square* sq);
     const std::vector<Square*>& getPixels();
     int getWidth();
     int getHeigth();
