@@ -18,11 +18,11 @@
 
 
 // default values
-#define WIDTH   16
-#define HEIGHT  16
-#define PIXELSX 600
-#define PIXELSY 600
-#define SPEED   1000
+#define WIDTH   32
+#define HEIGHT  32
+#define PIXELSX 640
+#define PIXELSY 640
+#define SPEED   20
 
 using namespace std;
 
@@ -89,8 +89,7 @@ int main(int argc, char* argv[]) {
 
     Playground* play = new Playground(w,h);
     Graphic* graph = new Graphic(window,renderer);
-    //std::srand(std::time(nullptr)); 
-    Square* sq1 = new Square(0, h/2, RGB{.r=RSQ1, .g=GSQ1, .b=BSQ1}, TOP | RIGHT);
+    Square* sq1 = new Square(0, h/2+3, RGB{.r=RSQ1, .g=GSQ1, .b=BSQ1}, TOP | RIGHT);
     Square* sq2 = new Square(w-1, h/2, RGB{.r=RSQ2, .g=GSQ2, .b=BSQ2}, BOTTOM | LEFT);
     play->init(sq1,sq2);
     graph->render(play->getPixels(),h,w);
@@ -113,7 +112,6 @@ int main(int argc, char* argv[]) {
             }
         }
         if(start){
-            cout << "yolo!" << endl;
             play->update(sq1,sq2);
             graph->render(play->getPixels(),h,w);
         }        
